@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "ToolTown Makerspace tool library REST API (BDF Group Assignment, JP-GAI2B-G06)",
   "main": "server.js",
-  "scripts": { "start": "node server.js" },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node run_postman_tests.js",
+    "postman": "node run_postman_tests.js",
+    "postman:cloud": "python ..\\run_cloud_newman.py"
+  },
   "dependencies": { "express": "^4.19.2", "sqlite3": "^5.1.7" }
 }
