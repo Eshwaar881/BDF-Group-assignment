@@ -1,12 +1,16 @@
 import subprocess
 import time
 import os
+import sys
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_DIR = os.path.join(BASE_DIR, 'complete-project')
 
 def load_env_key():
     key = os.environ.get("POSTMAN_API_KEY")
     if key:
         return key
-    env_file = os.path.join(os.path.dirname(__file__), ".env")
+    env_file = os.path.join(BASE_DIR, ".env")
     if os.path.exists(env_file):
         with open(env_file, "r") as f:
             for line in f:
@@ -14,13 +18,17 @@ def load_env_key():
                     return line.strip().split("=", 1)[1]
     raise ValueError("POSTMAN_API_KEY not found in environment or .env file.")
 
-db_path = os.path.abspath(r'complete-project\tooltown.db')
+db_path = os.path.join(PROJECT_DIR, 'tooltown.db')
 if os.path.exists(db_path):
-    os.remove(db_path)
-    print('Reset database tooltown.db')
+    try:
+        os.remove(db_path)
+        print('Reset database tooltown.db')
+    except Exception as e:
+        print(f'Note: Could not reset db: {e}')
 
-# Start server
-server = subprocess.Popen(['node', 'server.js'], cwd='complete-project')
+# Start server using absolute project path
+print(f'Starting API server in {PROJECT_DIR}...')
+server = subprocess.Popen(['node', 'server.js'], cwd=PROJECT_DIR, shell=True)
 time.sleep(2)
 
 api_key = load_env_key()
@@ -37,9 +45,7 @@ cmd = [
 ]
 
 try:
-    res = subprocess.run(cmd, capture_output=True, text=True)
-    print(res.stdout)
-    if res.stderr:
-        print(res.stderr)
+    print('Running Postman tests via Newman against Postman Cloud...\n')
+    res = subprocess.run(cmd, shell=True)
 finally:
     server.terminate()

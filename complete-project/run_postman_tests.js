@@ -68,7 +68,7 @@ async function run() {
   }
 
   // Start server
-  const server = spawn('node', ['server.js'], { cwd: __dirname });
+  const server = spawn('node', ['server.js'], { cwd: __dirname, shell: true });
   await new Promise(r => setTimeout(r, 1500));
 
   const collectionPath = path.join(__dirname, '..', 'task6-postman-and-readme', 'postman', 'ToolTown.postman_collection.json');
