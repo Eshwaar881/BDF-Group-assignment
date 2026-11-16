@@ -71,6 +71,9 @@ async function run() {
   const server = spawn('node', ['server.js'], { cwd: __dirname, shell: true });
   await new Promise(r => setTimeout(r, 1500));
 
+  // Reset database via API to ensure clean seed state
+  try { await sendRequest('POST', '/reset', {}); } catch (e) {}
+
   const collectionPath = path.join(__dirname, '..', 'task6-postman-and-readme', 'postman', 'ToolTown.postman_collection.json');
   const collection = JSON.parse(fs.readFileSync(collectionPath, 'utf-8'));
 

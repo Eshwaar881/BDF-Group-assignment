@@ -1,6 +1,6 @@
 // Task 2 update: server now creates the tables before listening
 const express = require('express');
-const { init } = require('./db');
+const { init, reset } = require('./db');
 const makersRouter = require('./routes/makers');
 const toolsRouter = require('./routes/tools');
 const loansRouter = require('./routes/loans');
@@ -9,6 +9,14 @@ const app = express();
 app.use(express.json());
 
 app.get('/', (req, res) => res.json({ service: 'ToolTown Makerspace API', status: 'running' }));
+app.post('/reset', async (req, res, next) => {
+  try {
+    await reset();
+    res.json({ message: 'Database reset to initial state' });
+  } catch (e) {
+    next(e);
+  }
+});
 
 app.use('/makers', makersRouter);
 app.use('/tools', toolsRouter);

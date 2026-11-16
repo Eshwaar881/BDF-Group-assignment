@@ -49,4 +49,13 @@ async function init() {
   }
 }
 
-module.exports = { db, run, get, all, init };
+async function reset() {
+  await run('PRAGMA foreign_keys = OFF');
+  await run('DROP TABLE IF EXISTS loans');
+  await run('DROP TABLE IF EXISTS tools');
+  await run('DROP TABLE IF EXISTS makers');
+  await run('PRAGMA foreign_keys = ON');
+  await init();
+}
+
+module.exports = { db, run, get, all, init, reset };
